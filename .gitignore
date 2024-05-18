@@ -1,0 +1,5 @@
+# ignore all the environment files
+dashboard/*
+
+#ignore all python installation files
+*.pyc
