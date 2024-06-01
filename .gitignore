@@ -3,3 +3,6 @@ dashboard/*
 
 #ignore all python installation files
 *.pyc
+
+.vscode/*
+.flaskenv
