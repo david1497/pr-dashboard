@@ -2,13 +2,18 @@ from flask import render_template, redirect, url_for, request, flash, session, j
 from flask_login import current_user, login_user, logout_user, login_required
 from urllib.parse import urlsplit
 import sqlalchemy as sa
-from flask_app import db
+from flask_app import db, login
 from flask_app.forms import LoginForm, RegistrationForm
 from flask_app.models import User
 
 from . import app
 
 user_name = ""
+
+@login.user_loader
+def load_user(user_id):
+    return User.query.get(user_id)
+
 
 @app.route('/')
 @app.route('/index')
@@ -82,16 +87,16 @@ def signup():
 
 
 
-@app.route('/get_user_info', methods=["GET"])
-def get_user_info():
-    if 'user_id' in session:
-        user_id = session['user_id']
-        user = User.query.get(user_id)
-        user_info = {
-            'id': user.id,
-            'username': user.username,
-            'email': user.email
-            # Add other user info as needed
-        }
-        return jsonify(user_info)
-    return jsonify({'error': 'User not logged in'}), 401
+# @app.route('/get_user_info', methods=["GET"])
+# def get_user_info():
+#     if 'user_id' in session:
+#         user_id = session['user_id']
+#         user = User.query.get(user_id)
+#         user_info = {
+#             'id': user.id,
+#             'username': user.username,
+#             'email': user.email
+#             # Add other user info as needed
+#         }
+#         return jsonify(user_info)
+#     return jsonify({'error': 'User not logged in'}), 401

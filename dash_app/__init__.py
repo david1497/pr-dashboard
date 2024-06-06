@@ -8,7 +8,7 @@ def create_dash_app(flask_app):
         __name__,
         server=flask_app,
         url_base_pathname='/overview/',
-        external_stylesheets=[dbc.themes.BOOTSTRAP]
+        external_stylesheets=[dbc.themes.BOOTSTRAP, 'overview.css']
     )
     dash_app.layout = layout
     register_callbacks(dash_app)

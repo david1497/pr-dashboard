@@ -1,0 +1,66 @@
+body {
+    background-color: #c8d7e64d;
+ }
+ 
+.first_row, .second_row, .row_splitter {
+    width: 90%;
+    margin: auto;
+}
+
+#react-entry-point > div > div.row_splitter.row > div > hr {
+    color: rgba(255, 255, 255, 0)
+}
+
+.main_table {
+    margin-top: 4% !important;
+}
+
+#prelims, #measured_works, #costs_to_complete, .main_table {
+    border: 1px solid rgba(179, 197, 199, 0.356);
+    border-radius: 4px;
+    box-shadow: 1px 1px 1px 1px #e3edef;
+}
+
+.cell-table tr th{
+    border-bottom: 2px solid rgb(198, 231, 229) !important;
+    border-top: 2px solid rgb(198, 231, 229) !important;
+    border-left: none !important;
+    border-right: none !important;
+    background-color: #e3edef !important;
+    height: 40px !important;
+    font-family: 'Times New Roman', Times, serif;
+    /* font-size: 16px; */
+    font-weight: bold !important;
+    color: rgb(36, 35, 35);
+}
+
+.cell-table tr td{
+    border-bottom: 1px solid rgb(204, 219, 218) !important;
+    border-top: 1px solid rgb(204, 219, 218) !important;
+    border-left: none !important;
+    border-right: none !important;
+    height: 40px !important;
+    font-family: 'Century';
+    font-weight: 400;
+    /* font-size: 13.5px; */
+}
+
+.slice > .surface{
+    font-family: 'Century' !important;
+    /* font-size: 13.5px !important; */
+}
+
+div.js-plotly-plot > div > div > svg > g.infolayer > g.g-gtitle > text {
+    font-family: 'Century' !important;
+    /* font-size: 17px !important; */
+}
+
+div.js-plotly-plot > div > div > svg > g.infolayer > g.legend > g > g > g > text {
+    font-family: 'Century' !important;
+    /* font-size: 13.5px !important; */
+}
+
+.pie_chart {
+    font-family: 'Century' !important;
+    /* font-size: 13.5px !important; */
+}

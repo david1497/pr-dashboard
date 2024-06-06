@@ -1,11 +1,11 @@
-import dash
+import os, dash
 from dash import html, dcc, dash_table, callback_context
 from dash.dependencies import Input, Output
 from dash.exceptions import PreventUpdate
 import dash_bootstrap_components as dbc
 import plotly.express as px
 import pandas as pd
-import os
+from flask_login import current_user
 
 from .helpers.data_table_styling import data_bars
 
@@ -15,9 +15,12 @@ print(os.getcwd())
 df = pd.read_excel('../dash_app/data/data_for_main_table.xlsx')
 agg_df = df.groupby('Project Name').agg({'Prelims':'sum', 'Measured Works':'sum', 'ToComplete Costs':'sum'})
 agg_df.reset_index(inplace=True)
-fig1 = px.pie(agg_df, values='Project Name', names='Prelims', title='Prelims')
-fig2 = px.pie(agg_df, values='Project Name', names='Measured Works', title='Measured Works')
-fig3 = px.pie(agg_df, values='Project Name', names='ToComplete Costs', title='Costs To Complete')
+fig1 = px.pie(agg_df, values='Prelims', names='Project Name')
+fig1.update_layout(title={'text': "Prelims", 'x':0.5, 'xanchor': 'center'})
+fig2 = px.pie(agg_df, values='Measured Works', names='Project Name')
+fig2.update_layout(title={'text': "Measured Works", 'x':0.5, 'xanchor': 'center'})
+fig3 = px.pie(agg_df, values='ToComplete Costs', names='Project Name')
+fig3.update_layout(title={'text': "Costs To Complete", 'x':0.5, 'xanchor': 'center'})
 
 
 
@@ -42,42 +45,34 @@ def format_percentage(percentage):
 
 def build_nav(user_type='admin'):
     
-    navbar = html.Div(
-    dbc.Row(
-        dbc.NavbarSimple(
-            children=[
-                dbc.NavItem(dbc.NavLink("COSTS", href="/")),
-                dbc.NavItem(dbc.NavLink("SUPPLIERS", href="overview")),
-                dbc.NavItem(dbc.NavLink("LABOUR", href="#")),
-                dbc.NavItem(dbc.NavLink("MATERIALS", href="#")),
-                dbc.NavItem(dbc.NavLink("REPORTS", href="#")),
-                dbc.NavItem(dbc.NavLink("PLACEHOLDER", href="#")),
-            ],
-            brand="PlattReilly",
-            brand_href="#",
-            color="primary",
-            dark=True,
-            fixed="top"
+    navbar = html.Div([
+        dcc.Store(id='username-store', data={'username': ''}),
+        dbc.Row(
+            dbc.NavbarSimple(
+                children=[
+                    dbc.NavItem(dbc.NavLink("COSTS", href="/")),
+                    dbc.NavItem(dbc.NavLink("SUPPLIERS", href="overview")),
+                    dbc.NavItem(dbc.NavLink("LABOUR", href="#")),
+                    dbc.NavItem(dbc.NavLink("MATERIALS", href="#")),
+                    dbc.NavItem(dbc.NavLink("REPORTS", href="#")),
+                    dbc.NavItem(id='username_nav_item', children=dbc.NavLink("", href="#")),
+                ],
+                brand="PlattReilly",
+                brand_href="#",
+                color="primary",
+                dark=True,
+                fixed="top"
+            )
         )
-    ))
+    ])
 
     return navbar
-
-
 
 
 
 # Define the layout of the app
 layout = html.Div(children=[
     build_nav(user_type='admin'),
-    dbc.Row(
-        html.Div(
-            dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True),
-            className="mt-lg-5 col-md-10",
-            style={"margin":"auto"}
-        )
-    ),
-
     dbc.Row(
         [dbc.Col(
             html.Div([
@@ -98,28 +93,49 @@ layout = html.Div(children=[
                     href='https://plotly.com/python/pie-charts/',
                     style={'display':'none'}
                 )
-            ]),
-            width=11,
-            align="center"
+            ],
+            className="main_table"
+            ),
+            width=12,
         )],
-        align="center"
+        className='first_row'
     ),
-
+    dbc.Row(
+        [
+            dbc.Col(html.Hr())
+        ],
+        className="row_splitter"
+    ),
     dbc.Row(
         [
             dbc.Col(
                 html.Div(dcc.Graph(figure=fig1, id="prelims")), 
-                width=3
+                width=4,
+                className='pie_chart prelims'
             ),
             dbc.Col(
                 html.Div(dcc.Graph(figure=fig2, id="measured_works")), 
-                width=3
+                width=4,
+                className='pie_chart measure_works'
             ),
             dbc.Col(
                 html.Div(dcc.Graph(figure=fig3, id="costs_to_complete")), 
-                width=3
+                width=4,
+                className='pie_chart costs_to_complete'
             ),
-        ]
-        
+        ],
+        className='second_row',        
     ),
 ])
+
+
+# @app.callback(
+#     Output('user-info', 'children'),
+#     [Input('user-info', 'id')]
+# )
+# def update_user_info(_):
+#     response = requests.get('http://127.0.0.1:5000/get_user_info')
+#     if response.status_code == 200:
+#         user_info = response.json()
+#         return f"Welcome, {user_info['username']}!"
+#     return "User not logged in

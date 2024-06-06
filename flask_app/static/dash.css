@@ -1,6 +1,10 @@
 /* Custom styles for Dash components */
 
 /* Example: Custom styling for a Dash DataTable */
+body {
+   background-color: #c2e0ff;
+}
+
 .dash-table {
     font-family: Arial, sans-serif;
     border-collapse: collapse;
