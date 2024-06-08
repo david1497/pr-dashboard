@@ -2,6 +2,13 @@ from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 from flask_login import current_user
 import requests
+from .layout_costs import layout_costs
+from .layout_suppliers import layout_suppliers
+from .layout_labour import layout_labour
+from .layout_materials import layout_materials
+from .layout_reports import layout_reports
+from .layout import layout
+
 
 def register_callbacks(dash_app):
     # define other callbacks below this one.
@@ -19,3 +26,22 @@ def register_callbacks(dash_app):
     )
     def display_username(data):
         return dbc.NavLink(data['username'], href="#")
+    
+
+    @dash_app.callback(Output('page-content', 'children'),
+                       [Input('url', 'pathname')])
+    def display_page(pathname):
+        if pathname == '/costs':
+            return layout_costs
+        elif pathname == '/suppliers':
+            return layout_suppliers
+        elif pathname == '/materials':
+            return layout_materials
+        elif pathname == '/reports':
+            return layout_reports
+        elif pathname == '/labour':
+            return layout_labour
+        elif pathname == '/overview':
+            return layout
+        else:
+            return layout

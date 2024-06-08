@@ -60,6 +60,10 @@ div.js-plotly-plot > div > div > svg > g.infolayer > g.legend > g > g > g > text
     /* font-size: 13.5px !important; */
 }
 
+div.js-plotly-plot > div > div > svg > g.pielayer > g > g > g > text {
+    font-family: 'Century' !important;
+}
+
 .pie_chart {
     font-family: 'Century' !important;
     /* font-size: 13.5px !important; */

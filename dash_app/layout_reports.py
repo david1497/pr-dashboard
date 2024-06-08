@@ -10,7 +10,7 @@ from flask_login import current_user
 from .helpers.data_table_styling import data_bars
 from .helpers.navbar import build_nav
 
-# Sample data
+
 df = pd.read_excel('../dash_app/data/data_for_main_table.xlsx')
 agg_df = df.groupby('Project Name').agg({'Prelims':'sum', 'Measured Works':'sum', 'ToComplete Costs':'sum'})
 agg_df.reset_index(inplace=True)
@@ -19,32 +19,12 @@ fig1.update_layout(title={'text': "Prelims", 'x':0.5, 'xanchor': 'center'})
 fig2 = px.pie(agg_df, values='Measured Works', names='Project Name')
 fig2.update_layout(title={'text': "Measured Works", 'x':0.5, 'xanchor': 'center'})
 fig3 = px.pie(agg_df, values='ToComplete Costs', names='Project Name')
-fig3.update_layout(title={'text': "Costs To Complete", 'x':0.5, 'xanchor': 'center'})
-
-
-
-# Define progress bar template
-def progress_bar_template(per):
-    return html.Div(
-        [
-            html.Div(
-                style={"width": "{}%".format(str(per))},
-                className="progress-bar progress-bar-striped progress-bar-animated",
-                children=[],
-            )
-        ],
-        className="progress",
-    )
-
-
-# Format function for the Percentage column
-def format_percentage(percentage):
-    return progress_bar_template(percentage) if isinstance(percentage, int) else percentage
+fig3.update_layout(title={'text': "Costs To Complete Reports", 'x':0.5, 'xanchor': 'center'})
 
 
 
 # Define the layout of the app
-layout = html.Div(children=[
+layout_reports = html.Div(children=[
     build_nav(user_type='admin'),
     dbc.Row(
         [dbc.Col(
@@ -99,16 +79,5 @@ layout = html.Div(children=[
         ],
         className='second_row',        
     ),
-])
-
-
-# @app.callback(
-#     Output('user-info', 'children'),
-#     [Input('user-info', 'id')]
-# )
-# def update_user_info(_):
-#     response = requests.get('http://127.0.0.1:5000/get_user_info')
-#     if response.status_code == 200:
-#         user_info = response.json()
-#         return f"Welcome, {user_info['username']}!"
-#     return "User not logged in
+], 
+id='page-content')

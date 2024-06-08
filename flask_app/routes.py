@@ -21,13 +21,58 @@ def index():
     return render_template('base.html')
 
 
-@app.route('/overview/', methods=["GET", "POST"])
+@app.route('/overview', methods=["GET", "POST"])
 @login_required
 def overview():
     if current_user.is_anonymous:
         return redirect(url_for('login'))
     else:
         return redirect(url_for('overview'))
+    
+
+@app.route('/costs', methods=["GET", "POST"])
+@login_required
+def costs():
+    if current_user.is_anonymous:
+        return redirect(url_for('login'))
+    else:
+        return redirect(url_for('costs'))
+    
+
+@app.route('/suppliers', methods=["GET", "POST"])
+@login_required
+def suppliers():
+    if current_user.is_anonymous:
+        return redirect(url_for('login'))
+    else:
+        return redirect(url_for('suppliers'))
+    
+
+@app.route('/labour', methods=["GET", "POST"])
+@login_required
+def labour():
+    if current_user.is_anonymous:
+        return redirect(url_for('login'))
+    else:
+        return redirect(url_for('labour'))
+    
+
+@app.route('/materials', methods=["GET", "POST"])
+@login_required
+def materials():
+    if current_user.is_anonymous:
+        return redirect(url_for('login'))
+    else:
+        return redirect(url_for('materials'))
+    
+
+@app.route('/reports', methods=["GET", "POST"])
+@login_required
+def reports():
+    if current_user.is_anonymous:
+        return redirect(url_for('login'))
+    else:
+        return redirect(url_for('reports'))
 
 
 @app.route('/auth', methods=["GET", "POST"])
