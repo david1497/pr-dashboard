@@ -1,6 +1,7 @@
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 from flask_login import current_user
+from dash import html
 import requests
 from .layout_costs import layout_costs
 from .layout_suppliers import layout_suppliers
@@ -45,3 +46,22 @@ def register_callbacks(dash_app):
             return layout
         else:
             return layout
+        
+    
+    # Add callback for the slider
+    @dash_app.callback(
+        Output('slider-output-container', 'children'),
+        [Input('footer-slider', 'value')]
+    )
+    def update_output(value):
+        return f'You have selected {value}'
+    
+
+    @dash_app.callback(Output("output", "children"), [Input("radios", "value")])
+    def get_horizontal_pos(value):
+        return value
+    
+
+    @dash_app.callback(Output("output1", "children"), [Input("side_slider", "value")])
+    def get_vertical_pos(value, checklist_value, switches_value):
+        return value

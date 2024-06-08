@@ -7,7 +7,7 @@ body {
     margin: auto;
 }
 
-#react-entry-point > div > div.row_splitter.row > div > hr {
+#page-content > div > div.row_splitter.row > div > hr {
     color: rgba(255, 255, 255, 0)
 }
 

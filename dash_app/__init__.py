@@ -9,9 +9,9 @@ def create_dash_app(flask_app):
         __name__,
         server=flask_app,
         url_base_pathname='/',
-        external_stylesheets=[dbc.themes.BOOTSTRAP, 'overview.css']
+        external_stylesheets=[dbc.themes.BOOTSTRAP, 'overview.css', 'footer.css']
     )
-    
+
     dash_app.layout = html.Div([
         dcc.Location(id='url', refresh=False),
         html.Div(id='page-content')
