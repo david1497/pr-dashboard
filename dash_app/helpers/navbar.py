@@ -15,6 +15,8 @@ def build_nav(user_type='admin'):
                     dbc.NavItem(dbc.NavLink("MATERIALS", href="materials")),
                     dbc.NavItem(dbc.NavLink("REPORTS", href="reports")),
                     dbc.NavItem(id='username_nav_item', children=dbc.NavLink("", href="#")),
+                    dbc.NavItem(id='output'),
+                    dbc.NavItem(id='output1'),
                 ],
                 brand="PlattReilly",
                 brand_href="overview",

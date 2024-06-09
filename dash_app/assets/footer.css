@@ -10,21 +10,21 @@
     margin-left: 47.5%;
 }
 
-#radios > div:nth-child(1) > label {
+#bottom_slider > div:nth-child(1) > label {
     border-top-left-radius: 15px !important;
     border-top-right-radius: 0px !important;
     border-bottom-right-radius: 0px !important;
     border-bottom-left-radius: 15px !important;
 }
 
-#radios > div:nth-child(2) > label {
+#bottom_slider > div:nth-child(2) > label {
     border-top-left-radius: 0px !important;
     border-top-right-radius: 15px !important;
     border-bottom-right-radius: 15px !important;
     border-bottom-left-radius: 0px !important;
 }
 
-#radios > div {
+#bottom_slider > div {
     padding-left: 0 !important;
     margin-bottom: 0 !important;
 }
@@ -34,7 +34,7 @@
     background-color: red !important;
 } */
 
-#radios > div > .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
+#bottom_slider > div > .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
     background-color: #e3a0a07a !important;
 }
 
