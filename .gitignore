@@ -6,3 +6,5 @@ dashboard/*
 
 .vscode/*
 .flaskenv
+
+flask_app/flask_session/

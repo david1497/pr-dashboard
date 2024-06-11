@@ -40,18 +40,18 @@ body {
     border-left: none !important;
     border-right: none !important;
     height: 40px !important;
-    font-family: 'Century';
+    font-family: 'Aptos';
     font-weight: 400;
     /* font-size: 13.5px; */
 }
 
 .slice > .surface{
-    font-family: 'Century' !important;
+    font-family: 'Aptos' !important;
     /* font-size: 13.5px !important; */
 }
 
 div.js-plotly-plot > div > div > svg > g.infolayer > g.g-gtitle > text {
-    font-family: 'Century' !important;
+    font-family: 'Aptos' !important;
     /* font-size: 17px !important; */
 }
 
@@ -61,10 +61,10 @@ div.js-plotly-plot > div > div > svg > g.infolayer > g.legend > g > g > g > text
 }
 
 div.js-plotly-plot > div > div > svg > g.pielayer > g > g > g > text {
-    font-family: 'Century' !important;
+    font-family: 'Aptos' !important;
 }
 
 .pie_chart {
-    font-family: 'Century' !important;
+    font-family: 'Aptos' !important;
     /* font-size: 13.5px !important; */
 }

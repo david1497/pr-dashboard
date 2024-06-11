@@ -45,7 +45,6 @@ def format_percentage(percentage):
 
 # Define the layout of the app
 layout = html.Div(children=[
-    build_nav(user_type='admin'),
     dbc.Row(
         [dbc.Col(
             html.Div([
@@ -99,38 +98,4 @@ layout = html.Div(children=[
         ],
         className='second_row',        
     ),
-    dbc.RadioItems(
-        id="bottom_slider",
-        className="btn-group footer_slider",
-        inputClassName="btn-check",
-        labelClassName="btn btn-outline-primary",
-        labelCheckedClassName="active",
-        options=[
-            {"label": "LEFT", "value": 'left'},
-            {"label": "RIGHT", "value": 'right'}
-        ],
-        value='left',
-    ),
-    dbc.RadioItems(
-            id="side_slider",
-            className="side_slider",
-            options=[
-                {"label": "", "value": "1"},
-                {"label": "", "value": "2"},
-                {"label": "", "value": "3"},
-            ],
-            value="1",
-        ),
 ])
-
-
-# @app.callback(
-#     Output('user-info', 'children'),
-#     [Input('user-info', 'id')]
-# )
-# def update_user_info(_):
-#     response = requests.get('http://127.0.0.1:5000/get_user_info')
-#     if response.status_code == 200:
-#         user_info = response.json()
-#         return f"Welcome, {user_info['username']}!"
-#     return "User not logged in

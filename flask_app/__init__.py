@@ -5,6 +5,7 @@ from dash_app import create_dash_app
 from flask_login import LoginManager
 import logging, os
 from logging.handlers import RotatingFileHandler, SMTPHandler
+# from flask_session import Session
 
 server = 'laptop-ttip97em\\sqlexpress'
 database = 'platt_reilly'
@@ -20,6 +21,8 @@ login = LoginManager(app)
 login.login_view = 'login'
 migrate = Migrate(app, db)
 
+# app.config['SESSION_TYPE'] = 'filesystem'
+# Session(app)
 
 # Function to create and register the first Dash app
 create_dash_app(app)

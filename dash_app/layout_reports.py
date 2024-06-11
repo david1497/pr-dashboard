@@ -25,7 +25,6 @@ fig3.update_layout(title={'text': "Costs To Complete Reports", 'x':0.5, 'xanchor
 
 # Define the layout of the app
 layout_reports = html.Div(children=[
-    build_nav(user_type='admin'),
     dbc.Row(
         [dbc.Col(
             html.Div([
@@ -79,27 +78,4 @@ layout_reports = html.Div(children=[
         ],
         className='second_row',        
     ),
-    dbc.RadioItems(
-        id="bottom_slider",
-        className="btn-group footer_slider",
-        inputClassName="btn-check",
-        labelClassName="btn btn-outline-primary",
-        labelCheckedClassName="active",
-        options=[
-            {"label": "LEFT", "value": 'left'},
-            {"label": "RIGHT", "value": 'right'}
-        ],
-        value='left',
-    ),
-    dbc.RadioItems(
-            id="side_slider",
-            className="side_slider",
-            options=[
-                {"label": "", "value": "1"},
-                {"label": "", "value": "2"},
-                {"label": "", "value": "3"},
-            ],
-            value="1",
-        ),
-], 
-id='page-content')
+])

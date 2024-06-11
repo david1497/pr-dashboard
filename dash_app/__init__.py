@@ -1,7 +1,5 @@
 from dash import Dash, html, dcc
 import dash_bootstrap_components as dbc
-from .layout import layout
-from .layout_costs import layout_costs
 from .callbacks import register_callbacks
 
 def create_dash_app(flask_app):

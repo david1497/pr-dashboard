@@ -1,13 +1,15 @@
 from dash.dependencies import Input, Output
+from dash import callback_context
 import dash_bootstrap_components as dbc
-from urllib.parse import parse_qs, urlparse
 from flask_login import current_user
+from .main_layout import main_layout
 from .layout_costs import layout_costs
 from .layout_suppliers import layout_suppliers
 from .layout_labour import layout_labour
 from .layout_materials import layout_materials
 from .layout_reports import layout_reports
 from .layout import layout
+# from flask_app.errors import not_found_error
 
 
 def register_callbacks(dash_app):
@@ -32,19 +34,19 @@ def register_callbacks(dash_app):
                        [Input('url', 'pathname')])
     def display_page(pathname):
         if pathname == '/costs':
-            return layout_costs
+            return main_layout
         elif pathname == '/suppliers':
-            return layout_suppliers
+            return main_layout #layout_suppliers
         elif pathname == '/materials':
-            return layout_materials
+            return main_layout #layout_materials
         elif pathname == '/reports':
-            return layout_reports
+            return main_layout #layout_reports
         elif pathname == '/labour':
-            return layout_labour
+            return main_layout #layout_labour
         elif pathname == '/overview':
-            return layout
+            return main_layout #layout
         else:
-            return layout
+            return main_layout #layout
         
     
     # Add callback for the slider
@@ -66,44 +68,75 @@ def register_callbacks(dash_app):
         return value
     
 
-
-    # Update layout based on URL parameters
     @dash_app.callback(
-        Output('bottom_slider', 'value'),
-        Output('side_slider', 'value'),
-        [Input('url', 'search')]
+        [Output('side_slider', 'value'), Output('bottom_slider', 'value')],
+        [Input('url', 'pathname')]
     )
-    def update_radio_values(search):
-        parsed = parse_qs(urlparse(search).query)
-        bottom_slider_value = parsed.get('bottom_slider', ['left'])[0]
-        side_slider_value = parsed.get('side_slider', ['1'])[0]
-        return bottom_slider_value, side_slider_value
+    def update_radios(pathname):
+        page_map = {
+            '/overview': ('1', 'left'),
+            '/costs': ('1', 'right'),
+            '/materials': ('2', 'left'),
+            '/labour': ('2', 'right'),
+            '/suppliers': ('3', 'left'),
+            '/reports': ('3', 'right'),
+        }
+        if pathname in page_map:
+            return page_map[pathname]
+        return '1', 'left'
 
 
+    @dash_app.callback(Output('url', 'pathname'),
+    [Input('side_slider', 'value'), Input('bottom_slider', 'value')]
+    )
+    def update_url(side_slider, bottom_slider):
 
+        ctx = callback_context
+        if not ctx.triggered:
+            print("No callback triggered")
+        else:
+            triggered_input = ctx.triggered[0]['prop_id'].split('.')[0]
+            print(f"Callback triggered by: {triggered_input}")
 
+        if side_slider and bottom_slider:
+            # Map the combination of radio buttons to specific pages
+            page_map = {
+                ('1', 'left'): '/overview',
+                ('1', 'right'): '/costs',
+                ('2', 'left'): '/materials',
+                ('2', 'right'): '/labour',
+                ('3', 'left'): '/suppliers',
+                ('3', 'right'): '/reports',
+            }
+            return page_map[(side_slider, bottom_slider)]
+        return '/overview'
+    
+
+    # Callback to display the page content based on URL
     @dash_app.callback(
-        Output('url', 'href'),
-        [Input('side_slider', 'value'), Input('bottom_slider', 'value')]
+        Output('main-page-content', 'children'),
+        [Input('url', 'pathname')]
     )
-    def update_url(side_slider_value, bottom_slider_value):
-        base_url = '/'
-        if bottom_slider_value == 'left' and side_slider_value == "1":
-            # return '/overview'
-            return f'{base_url}overview?radio1={side_slider_value}&radio2={bottom_slider_value}'
-        elif bottom_slider_value == 'left' and side_slider_value == "2":
-            # return '/costs'    
-            return f'{base_url}costs?radio1={side_slider_value}&radio2={bottom_slider_value}'             
-        elif bottom_slider_value == 'left' and side_slider_value == "3":
-            # return '/labour'
-            return f'{base_url}labour?radio1={side_slider_value}&radio2={bottom_slider_value}'
-        elif bottom_slider_value == 'right' and side_slider_value == "1":
-            # return '/materials'
-            return f'{base_url}materials?radio1={side_slider_value}&radio2={bottom_slider_value}'
-        elif bottom_slider_value == 'right' and side_slider_value == "2":
-            # return '/suppliers'
-            return f'{base_url}suppliers?radio1={side_slider_value}&radio2={bottom_slider_value}'
-        elif bottom_slider_value == 'right' and side_slider_value == "3":
-            # return '/reports'
-            return f'{base_url}reports?radio1={side_slider_value}&radio2={bottom_slider_value}'
-        return '/'
+    def display_page(pathname):
+        
+        ctx = callback_context
+        if not ctx.triggered:
+            print("No callback triggered")
+        else:
+            triggered_input = ctx.triggered[0]['prop_id'].split('.')[0]
+            print(f"Callback triggered by: {triggered_input}")
+
+        if pathname == '/overview':
+            return layout
+        elif pathname == '/costs':
+            return layout_costs
+        elif pathname == '/materials':
+            return layout_materials
+        elif pathname == '/labour':
+            return layout_labour
+        elif pathname == '/suppliers':
+            return layout_suppliers
+        elif pathname == '/reports':
+            return layout_reports
+        else:
+            pass

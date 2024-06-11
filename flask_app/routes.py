@@ -27,6 +27,7 @@ def overview():
     if current_user.is_anonymous:
         return redirect(url_for('login'))
     else:
+        # return redirect(url_for('main_layout'))
         return redirect(url_for('overview'))
     
 
@@ -37,6 +38,7 @@ def costs():
         return redirect(url_for('login'))
     else:
         return redirect(url_for('costs'))
+        # return redirect(url_for('main_layout'))
     
 
 @app.route('/suppliers', methods=["GET", "POST"])
@@ -155,17 +157,3 @@ def page5():
 @app.route('/reports')
 def page6():
     return "This is page 6"
-
-# @app.route('/get_user_info', methods=["GET"])
-# def get_user_info():
-#     if 'user_id' in session:
-#         user_id = session['user_id']
-#         user = User.query.get(user_id)
-#         user_info = {
-#             'id': user.id,
-#             'username': user.username,
-#             'email': user.email
-#             # Add other user info as needed
-#         }
-#         return jsonify(user_info)
-#     return jsonify({'error': 'User not logged in'}), 401
