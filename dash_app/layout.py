@@ -45,6 +45,72 @@ def format_percentage(percentage):
 
 # Define the layout of the app
 layout = html.Div(children=[
+    dbc.Row([
+        dbc.Col([
+            html.Div([
+                html.H3('Overview page')
+            ])
+        ])
+    ],
+    className='title_row'),
+    dbc.Row(
+        [
+            dbc.Col(html.Hr())
+        ],
+        className="row_splitter"
+    ),
+    dbc.Row([
+        dbc.Col([
+            html.Div([
+                html.H5('Overview page'),
+                html.H2('1 000 520')
+            ])
+        ], 
+        className='kpi_col'),
+        dbc.Col([
+            html.Div([
+                html.H5('Overview page'),
+                html.H2('1 000 520')
+            ])
+        ], 
+        className='kpi_col'),
+        dbc.Col([
+            html.Div([
+                html.H5('Overview page'),
+                html.H2('1 000 520')
+            ])
+        ], 
+        className='kpi_col'),
+        dbc.Col([
+            html.Div([
+                html.H5('Overview page'),
+                html.H2('1 000 520')
+            ])
+        ], 
+        className='kpi_col'),
+        dbc.Col([
+            html.Div([
+                html.H5('Overview page'),
+                html.H2('1 000 520')
+            ])
+        ], 
+        className='kpi_col'),
+        dbc.Col([
+            html.Div([
+                html.H5('Overview page'),
+                html.H2('1 000 520')
+            ])
+        ],
+        className='kpi_col'),
+    ],
+    className='kpi_row'
+    ),
+    dbc.Row(
+        [
+            dbc.Col(html.Hr())
+        ],
+        className="row_splitter"
+    ),
     dbc.Row(
         [dbc.Col(
             html.Div([
@@ -81,7 +147,11 @@ layout = html.Div(children=[
     dbc.Row(
         [
             dbc.Col(
-                html.Div(dcc.Graph(figure=fig1, id="prelims")), 
+                html.Div(dcc.Graph(
+                    figure=fig1, 
+                    id="prelims",
+                    animate=True,
+                    responsive=True)), 
                 width=4,
                 className='pie_chart prelims'
             ),

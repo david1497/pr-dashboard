@@ -1,8 +1,12 @@
 body {
     background-color: #c8d7e64d;
- }
- 
-.first_row, .second_row, .row_splitter {
+}
+
+.title_row {
+    margin-top: 4% !important;
+}
+
+.title_row, .kpi_row, .first_row, .second_row, .row_splitter {
     width: 90%;
     margin: auto;
 }
@@ -11,9 +15,9 @@ body {
     color: rgba(255, 255, 255, 0)
 }
 
-.main_table {
+/* .main_table {
     margin-top: 4% !important;
-}
+} */
 
 #prelims, #measured_works, #costs_to_complete, .main_table {
     border: 1px solid rgba(179, 197, 199, 0.356);
@@ -67,4 +71,26 @@ div.js-plotly-plot > div > div > svg > g.pielayer > g > g > g > text {
 .pie_chart {
     font-family: 'Aptos' !important;
     /* font-size: 13.5px !important; */
+}
+
+
+.nav-link.active {
+    background-color: #f1f1eb17;
+    border-radius: 5px;
+    box-shadow: -3px 4px 6px 1px #1d8ba38f;
+}
+
+div.kpi_row.row > div {
+    background-color: white;
+    width: 95%;
+    margin: auto;
+    margin-left: 0.5%;
+    margin-right: 0.5%;
+    border: 1px solid #c2e0ffad;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px 5px #c2e0ff36;
+}
+
+#main-page-content > div > div.kpi_row.row > div > div {
+    text-align: center;
 }

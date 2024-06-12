@@ -133,27 +133,27 @@ def signup():
     return render_template('signup.html', form=form)
 
 
-# Define the Flask routes
-@app.route('/overview')
-def page1():
-    return "This is page 1"
+# # Define the Flask routes
+# @app.route('/overview')
+# def page1():
+#     return "This is page 1"
 
-@app.route('/materials')
-def page2():
-    return "This is page 2"
+# @app.route('/materials')
+# def page2():
+#     return "This is page 2"
 
-@app.route('/labour')
-def page3():
-    return "This is page 3"
+# @app.route('/labour')
+# def page3():
+#     return "This is page 3"
 
-@app.route('/suppliers')
-def page4():
-    return "This is page 4"
+# @app.route('/suppliers')
+# def page4():
+#     return "This is page 4"
 
-@app.route('/costs')
-def page5():
-    return "This is page 5"
+# @app.route('/costs')
+# def page5():
+#     return "This is page 5"
 
-@app.route('/reports')
-def page6():
-    return "This is page 6"
+# @app.route('/reports')
+# def page6():
+#     return "This is page 6"

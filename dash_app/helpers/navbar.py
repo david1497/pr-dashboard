@@ -9,11 +9,11 @@ def build_nav(user_type='admin'):
         dbc.Row(
             dbc.NavbarSimple(
                 children=[
-                    dbc.NavItem(dbc.NavLink("COSTS", href="costs")),
-                    dbc.NavItem(dbc.NavLink("SUPPLIERS", href="suppliers")),
-                    dbc.NavItem(dbc.NavLink("LABOUR", href="labour")),
-                    dbc.NavItem(dbc.NavLink("MATERIALS", href="materials")),
-                    dbc.NavItem(dbc.NavLink("REPORTS", href="reports")),
+                    dbc.NavItem(dbc.NavLink("COSTS", href="costs", id='costs-link')),
+                    dbc.NavItem(dbc.NavLink("SUPPLIERS", href="suppliers", id='suppliers-link')),
+                    dbc.NavItem(dbc.NavLink("LABOUR", href="labour", id='labour-link')),
+                    dbc.NavItem(dbc.NavLink("MATERIALS", href="materials", id='materials-link')),
+                    dbc.NavItem(dbc.NavLink("REPORTS", href="reports", id='reports-link')),
                     dbc.NavItem(id='username_nav_item', children=dbc.NavLink("", href="#")),
                     dbc.NavItem(id='output'),
                     dbc.NavItem(id='output1'),

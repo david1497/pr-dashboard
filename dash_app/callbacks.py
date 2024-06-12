@@ -1,7 +1,8 @@
-from dash.dependencies import Input, Output
-from dash import callback_context
-import dash_bootstrap_components as dbc
-from flask_login import current_user
+from dash.dependencies import Input, Output # type: ignore
+import dash # type: ignore
+from dash import callback_context # type: ignore
+import dash_bootstrap_components as dbc # type: ignore
+from flask_login import current_user # type: ignore
 from .main_layout import main_layout
 from .layout_costs import layout_costs
 from .layout_suppliers import layout_suppliers
@@ -29,6 +30,31 @@ def register_callbacks(dash_app):
     def display_username(data):
         return dbc.NavLink(data['username'], href="#")
     
+    
+    # # Callback to update the URL based on swipe events
+    # @dash_app.callback(
+    #     Output('url', 'pathname'),
+    #     [Input('swipe-event', 'children'), [Input('url', 'pathname')]]
+    # )
+    # def handle_swipe(swipe_event, url):
+
+    #     ctx = callback_context
+    #     if not ctx.triggered:
+    #         print("No callback triggered")
+    #     else:
+    #         triggered_input = ctx.triggered[0]['prop_id'].split('.')[0]
+    #         print(f"Callback triggered by: {triggered_input}")
+
+    #     if swipe_event == 'left':
+    #         # Handle left swipe (e.g., navigate to the next page)
+    #         print("Swiped left")
+    #         # return '/page-2'  # Example, change this to the appropriate page
+    #     elif swipe_event == 'right':
+    #         # Handle right swipe (e.g., navigate to the previous page)
+    #         print("Swiped right")
+    #         # return '/page-1'  # Example, change this to the appropriate page
+    #     return dash.no_update
+
 
     @dash_app.callback(Output('page-content', 'children'),
                        [Input('url', 'pathname')])
@@ -140,3 +166,28 @@ def register_callbacks(dash_app):
             return layout_reports
         else:
             pass
+
+
+    @dash_app.callback(
+    [Output('costs-link', 'className'),
+     Output('suppliers-link', 'className'),
+     Output('labour-link', 'className'),
+     Output('materials-link', 'className'),
+     Output('reports-link', 'className')],
+    [Input('url', 'pathname')]
+    )
+    def update_active_link(pathname):
+        # Default class for all links
+        classes = ['nav-link'] * 5
+        # Highlight the active link
+        if pathname == '/costs':
+            classes[0] += ' active'
+        elif pathname == '/suppliers':
+            classes[1] += ' active'
+        elif pathname == '/labour':
+            classes[2] += ' active'
+        elif pathname == '/materials':
+            classes[3] += ' active'
+        elif pathname == '/reports':
+            classes[4] += ' active'
+        return classes

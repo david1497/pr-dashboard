@@ -22,6 +22,7 @@ fig3.update_layout(title={'text': "Costs To Complete Costs", 'x':0.5, 'xanchor':
 main_layout = html.Div(children=[
     build_nav(user_type='admin'),
     html.Div(id='main-page-content'),
+    # html.Div(id='swipe-event', style={'display': 'none'}),
     dbc.RadioItems(
         id="bottom_slider",
         className="btn-group footer_slider",
