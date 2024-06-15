@@ -14,7 +14,7 @@
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
-                <li><a href="/overview/">Dash App</a></li>
+                <li><a href="/overview">Dash App</a></li>
                 {% if current_user.is_anonymous %}
                 <li><a href="/auth">Login</a></li>
                 {% else %}
@@ -24,15 +24,6 @@
         </nav>
     </header>
     <hr>
-    <!-- {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %} -->
     <div id="content">
         {% block content %}
         {% endblock %}

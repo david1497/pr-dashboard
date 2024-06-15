@@ -29,47 +29,22 @@ def register_callbacks(dash_app):
     )
     def display_username(data):
         return dbc.NavLink(data['username'], href="#")
-    
-    
-    # # Callback to update the URL based on swipe events
-    # @dash_app.callback(
-    #     Output('url', 'pathname'),
-    #     [Input('swipe-event', 'children'), [Input('url', 'pathname')]]
-    # )
-    # def handle_swipe(swipe_event, url):
-
-    #     ctx = callback_context
-    #     if not ctx.triggered:
-    #         print("No callback triggered")
-    #     else:
-    #         triggered_input = ctx.triggered[0]['prop_id'].split('.')[0]
-    #         print(f"Callback triggered by: {triggered_input}")
-
-    #     if swipe_event == 'left':
-    #         # Handle left swipe (e.g., navigate to the next page)
-    #         print("Swiped left")
-    #         # return '/page-2'  # Example, change this to the appropriate page
-    #     elif swipe_event == 'right':
-    #         # Handle right swipe (e.g., navigate to the previous page)
-    #         print("Swiped right")
-    #         # return '/page-1'  # Example, change this to the appropriate page
-    #     return dash.no_update
 
 
     @dash_app.callback(Output('page-content', 'children'),
                        [Input('url', 'pathname')])
     def display_page(pathname):
-        if pathname == '/costs':
+        if pathname == '/costs' or pathname == '/costs/':
             return main_layout
-        elif pathname == '/suppliers':
+        elif pathname == '/suppliers' or pathname == '/suppliers/':
             return main_layout #layout_suppliers
-        elif pathname == '/materials':
+        elif pathname == '/materials' or pathname == '/materials/':
             return main_layout #layout_materials
-        elif pathname == '/reports':
+        elif pathname == '/reports' or pathname == '/reports/':
             return main_layout #layout_reports
-        elif pathname == '/labour':
+        elif pathname == '/labour' or pathname == '/labour/':
             return main_layout #layout_labour
-        elif pathname == '/overview':
+        elif pathname == '/overview' or pathname == '/overview/':
             return main_layout #layout
         else:
             return main_layout #layout
@@ -140,7 +115,7 @@ def register_callbacks(dash_app):
 
     # Callback to display the page content based on URL
     @dash_app.callback(
-        Output('main-page-content', 'children'),
+        [Output('main-page-content', 'children'), Output('page-title', 'children')],
         [Input('url', 'pathname')]
     )
     def display_page(pathname):
@@ -152,18 +127,18 @@ def register_callbacks(dash_app):
             triggered_input = ctx.triggered[0]['prop_id'].split('.')[0]
             print(f"Callback triggered by: {triggered_input}")
 
-        if pathname == '/overview':
-            return layout
-        elif pathname == '/costs':
-            return layout_costs
-        elif pathname == '/materials':
-            return layout_materials
-        elif pathname == '/labour':
-            return layout_labour
-        elif pathname == '/suppliers':
-            return layout_suppliers
-        elif pathname == '/reports':
-            return layout_reports
+        if pathname == '/overview' or pathname == '/overview/':
+            return layout, "Overview page"
+        elif pathname == '/costs' or pathname == '/costs/':
+            return layout_costs, "Costs page"
+        elif pathname == '/materials' or pathname == '/materials/':
+            return layout_materials, "Materials page"
+        elif pathname == '/labour' or pathname == '/labour/':
+            return layout_labour, "Labour page"
+        elif pathname == '/suppliers' or pathname == '/suppliers/':
+            return layout_suppliers, "Suppliers page"
+        elif pathname == '/reports' or pathname == '/reports/':
+            return layout_reports, "Reports page"
         else:
             pass
 
@@ -180,14 +155,14 @@ def register_callbacks(dash_app):
         # Default class for all links
         classes = ['nav-link'] * 5
         # Highlight the active link
-        if pathname == '/costs':
+        if pathname == '/costs' or pathname == '/costs/':
             classes[0] += ' active'
-        elif pathname == '/suppliers':
+        elif pathname == '/suppliers' or pathname == '/suppliers/':
             classes[1] += ' active'
-        elif pathname == '/labour':
+        elif pathname == '/labour' or pathname == '/labour/':
             classes[2] += ' active'
-        elif pathname == '/materials':
+        elif pathname == '/materials' or pathname == '/materials/':
             classes[3] += ' active'
-        elif pathname == '/reports':
+        elif pathname == '/reports' or pathname == '/reports/':
             classes[4] += ' active'
         return classes

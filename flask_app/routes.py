@@ -5,10 +5,23 @@ import sqlalchemy as sa
 from flask_app import db, login
 from flask_app.forms import LoginForm, RegistrationForm
 from flask_app.models import User
+import logging
 
 from . import app
 
 user_name = ""
+
+# This is needed to print the logs from the browser in the flask server logs
+# Set logging level and format
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+# ---------------------------------------------------------------------------
+@app.route('/log', methods=['POST'])
+def log():
+    log_data = request.json
+    app.logger.info(f"Client log: {log_data['message']}")
+    return jsonify({"status": "success"}), 200
+# ----------------------------------------------------------------------------
+
 
 @login.user_loader
 def load_user(user_id):

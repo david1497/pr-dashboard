@@ -19,7 +19,7 @@ def build_nav(user_type='admin'):
                     dbc.NavItem(id='output1'),
                 ],
                 brand="PlattReilly",
-                brand_href="overview",
+                brand_href="overview/",
                 color="primary",
                 dark=True,
                 fixed="top"

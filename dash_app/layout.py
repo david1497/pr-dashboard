@@ -45,14 +45,6 @@ def format_percentage(percentage):
 
 # Define the layout of the app
 layout = html.Div(children=[
-    dbc.Row([
-        dbc.Col([
-            html.Div([
-                html.H3('Overview page')
-            ])
-        ])
-    ],
-    className='title_row'),
     dbc.Row(
         [
             dbc.Col(html.Hr())

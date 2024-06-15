@@ -21,8 +21,15 @@ fig3.update_layout(title={'text': "Costs To Complete Costs", 'x':0.5, 'xanchor':
 # Define the layout of the app
 main_layout = html.Div(children=[
     build_nav(user_type='admin'),
+    dbc.Row([
+        dbc.Col([
+            html.Div([
+                html.H3('Overview page', className='page-title', id='page-title')
+            ])
+         ])
+    ],
+    className='title_row'),
     html.Div(id='main-page-content'),
-    # html.Div(id='swipe-event', style={'display': 'none'}),
     dbc.RadioItems(
         id="bottom_slider",
         className="btn-group footer_slider",
@@ -44,5 +51,5 @@ main_layout = html.Div(children=[
                 {"label": "", "value": "3"},
             ],
             value="1",
-        )
+        ),
 ])
