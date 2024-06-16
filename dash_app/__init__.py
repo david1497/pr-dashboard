@@ -9,6 +9,7 @@ def create_dash_app(flask_app):
         url_base_pathname='/',
         external_stylesheets=[dbc.themes.BOOTSTRAP, 'overview.css', 'footer.css'],
         external_scripts=['/assets/swipe.js', 
+                          '/assets/scroll.js',
                           "https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"]
     )
 
