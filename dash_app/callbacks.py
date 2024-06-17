@@ -3,6 +3,7 @@ import dash # type: ignore
 from dash import callback_context # type: ignore
 import dash_bootstrap_components as dbc # type: ignore
 from flask_login import current_user # type: ignore
+import pandas as pd
 from .main_layout import main_layout
 from .layout_costs import layout_costs
 from .layout_suppliers import layout_suppliers
@@ -10,6 +11,7 @@ from .layout_labour import layout_labour
 from .layout_materials import layout_materials
 from .layout_reports import layout_reports
 from .layout import layout
+from .helpers.etl import build_area_chart
 # from flask_app.errors import not_found_error
 
 
@@ -29,6 +31,32 @@ def register_callbacks(dash_app):
     )
     def display_username(data):
         return dbc.NavLink(data['username'], href="#")
+    
+
+    @dash_app.callback([Output("prelims_kpi", "figure"), Output("measured_works_kpi", "figure"),
+                        Output("costs_kpi", "figure"), Output("revenue_kpi", "figure"),
+                        Output("profit_kpi", "figure"), Output("margin_kpi", "figure")                        ], 
+                       [Input("overview_table", "selected_rows"), Input("overview_table", "data")])
+    def update_kpi_charts(selected_rows, data):
+        selected_projects = []
+        if selected_rows != None:
+            for sr in selected_rows:
+                selected_projects.append(data[sr]['Project Name'])
+            df = pd.read_excel('../dash_app/data/data_for_main_table.xlsx')
+            df = df[df['Project Name'].isin(selected_projects)]
+
+        else:
+            df = pd.read_excel('../dash_app/data/data_for_main_table.xlsx')
+
+        prelims_kpi = build_area_chart(df, 'Prelims', lc='rgba(39, 19, 190, 0.96)', fc='rgba(149, 142, 202, 0.64)')
+        measured_works_kpi = build_area_chart(df, 'Measured Works', lc='rgba(25, 130, 58, 0.94)', fc='rgba(83, 233, 130, 0.45)')
+        costs_kpi = build_area_chart(df, 'Act. Costs', lc='rgba(211, 118, 60, 0.95)', fc='rgba(242, 161, 21, 0.35)')
+        revenue_kpi = build_area_chart(df, 'Act. Revenue', lc='rgba(20, 51, 137, 1)', fc='rgba(89, 167, 255, 0.53)')
+        profit_kpi = build_area_chart(df, 'Est. Profit', lc='rgba(199, 181, 35, 1)', fc='rgba(255, 232, 138, 0.44)')
+        margin_kpi = build_area_chart(df, 'Margin (%)', lc='rgba(233, 89, 145, 0.94)', fc='rgba(245, 130, 145, 0.28)')
+
+        return prelims_kpi, measured_works_kpi, costs_kpi, revenue_kpi, profit_kpi, margin_kpi
+    
 
 
     @dash_app.callback(Output('page-content', 'children'),
@@ -59,14 +87,14 @@ def register_callbacks(dash_app):
         return f'You have selected {value}'
     
 
-    @dash_app.callback(Output("output", "children"), [Input("bottom_slider", "value")])
-    def get_horizontal_pos(value):
-        return value
+    # @dash_app.callback(Output("output", "children"), [Input("bottom_slider", "value")])
+    # def get_horizontal_pos(value):
+    #     return value
     
 
-    @dash_app.callback(Output("output1", "children"), [Input("side_slider", "value")])
-    def get_vertical_pos(value):
-        return value
+    # @dash_app.callback(Output("output1", "children"), [Input("side_slider", "value")])
+    # def get_vertical_pos(value):
+    #     return value
     
 
     @dash_app.callback(
