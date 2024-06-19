@@ -94,3 +94,46 @@ div.kpi_row.row > div {
 #main-page-content > div > div.kpi_row.row > div > div {
     text-align: center;
 }
+
+#main-page-content > div > div.kpi_row.row > div > div {
+    position: relative;
+}
+
+.kpi_col > div > h6 {
+    position: absolute;
+    top: 75%;
+    left: 80%; 
+    color: #040404a3;
+}
+
+#prelims_kpi_change_icon,
+#measured_works_kpi_change_icon,
+#costs_kpi_change_icon,
+#revenue_kpi_change_icon,
+#profit_kpi_change_icon,
+#margin_kpi_change_icon {
+    top: 20%;
+    left: 2%;
+}
+
+#main-page-content > div > div.kpi_row.row > div > h5 {
+    font-weight: 400 !important;
+    font-size: 1.10rem !important;
+}
+
+
+#open_charts_collapse_btn, #open_map_collapse_btn {
+    background-color: #c2d3d394 !important;
+    border: 1px solid #0000003b !important;
+    color: #141313ba !important;
+    font-weight: 500 !important;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+    width: 99%;
+    margin-left: 0.5%;
+}
+
+hr {
+    color: rgba(0, 0, 0, 0);
+}

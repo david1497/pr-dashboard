@@ -1,9 +1,10 @@
-from dash.dependencies import Input, Output # type: ignore
+from dash.dependencies import Input, Output, State # type: ignore
 import dash # type: ignore
-from dash import callback_context # type: ignore
+from dash import callback_context, html # type: ignore
 import dash_bootstrap_components as dbc # type: ignore
 from flask_login import current_user # type: ignore
 import pandas as pd
+import plotly.express as px # type: ignore
 from .main_layout import main_layout
 from .layout_costs import layout_costs
 from .layout_suppliers import layout_suppliers
@@ -11,8 +12,22 @@ from .layout_labour import layout_labour
 from .layout_materials import layout_materials
 from .layout_reports import layout_reports
 from .layout import layout
-from .helpers.etl import build_area_chart
+from .helpers.etl import build_area_chart, get_nth_value_column, get_change_direction
+from .helpers.data_importer import agg_df #, agg_df_t
+from .helpers.layout_components import build_pie_charts, build_line_chart
 # from flask_app.errors import not_found_error
+
+agg_df_t = px.data.gapminder().query("continent=='Oceania'")
+
+fig1 = px.pie(agg_df, values='Prelims', names='Project Name')
+fig1.update_layout(title={'text': "Prelims", 'x':0.5, 'xanchor': 'center'})
+fig2 = px.pie(agg_df, values='Measured Works', names='Project Name')
+fig2.update_layout(title={'text': "Measured Works", 'x':0.5, 'xanchor': 'center'})
+fig3 = px.pie(agg_df, values='ToComplete Costs', names='Project Name')
+fig3.update_layout(title={'text': "Costs To Complete", 'x':0.5, 'xanchor': 'center'})
+line_chart_fig = px.line(agg_df_t, x="year", y="lifeExp", color='country')
+
+
 
 
 def register_callbacks(dash_app):
@@ -33,32 +48,140 @@ def register_callbacks(dash_app):
         return dbc.NavLink(data['username'], href="#")
     
 
-    @dash_app.callback([Output("prelims_kpi", "figure"), Output("measured_works_kpi", "figure"),
-                        Output("costs_kpi", "figure"), Output("revenue_kpi", "figure"),
-                        Output("profit_kpi", "figure"), Output("margin_kpi", "figure")                        ], 
-                       [Input("overview_table", "selected_rows"), Input("overview_table", "data")])
-    def update_kpi_charts(selected_rows, data):
+    @dash_app.callback([Output('filtered-data-store', 'data'), Output('selected-projects-store', 'data')],
+                       [Input("overview_table", "selected_rows")],
+                       State('overview_table', 'data'))
+    def slice_data_main_table(selected_rows, data):
+        """slice_data_main_table
+        This callback will slice the dataframe behind the visuals in the main page based on the user selections in the main table.
+        The sliced data will be passed to other callbacks using the dcc.Store object from the layout.py
+
+        Args:
+            selected_rows (_type_): _description_
+            data (_type_): _description_
+        """
+        df = pd.read_excel('../dash_app/data/data_for_main_table.xlsx')
         selected_projects = []
         if selected_rows != None:
             for sr in selected_rows:
                 selected_projects.append(data[sr]['Project Name'])
-            df = pd.read_excel('../dash_app/data/data_for_main_table.xlsx')
-            df = df[df['Project Name'].isin(selected_projects)]
+            if len(selected_projects) > 0:
+                df = df[df['Project Name'].isin(selected_projects)]
 
-        else:
-            df = pd.read_excel('../dash_app/data/data_for_main_table.xlsx')
+        return df.to_dict(), selected_projects
 
-        prelims_kpi = build_area_chart(df, 'Prelims', lc='rgba(39, 19, 190, 0.96)', fc='rgba(149, 142, 202, 0.64)')
-        measured_works_kpi = build_area_chart(df, 'Measured Works', lc='rgba(25, 130, 58, 0.94)', fc='rgba(83, 233, 130, 0.45)')
-        costs_kpi = build_area_chart(df, 'Act. Costs', lc='rgba(211, 118, 60, 0.95)', fc='rgba(242, 161, 21, 0.35)')
-        revenue_kpi = build_area_chart(df, 'Act. Revenue', lc='rgba(20, 51, 137, 1)', fc='rgba(89, 167, 255, 0.53)')
-        profit_kpi = build_area_chart(df, 'Est. Profit', lc='rgba(199, 181, 35, 1)', fc='rgba(255, 232, 138, 0.44)')
-        margin_kpi = build_area_chart(df, 'Margin (%)', lc='rgba(233, 89, 145, 0.94)', fc='rgba(245, 130, 145, 0.28)')
 
-        return prelims_kpi, measured_works_kpi, costs_kpi, revenue_kpi, profit_kpi, margin_kpi
+    kpis = ['prelims', 'measured_works', 'costs', 'revenue', 'profit', 'margin']
+
+
+    update_kpi_charts_outputs = []
+    for kpi in kpis:
+        update_kpi_charts_outputs.append(Output(f'{kpi}_kpi', 'figure'))
+
+    @dash_app.callback(
+            update_kpi_charts_outputs,
+            [Input('filtered-data-store', 'data')])
+    def update_kpi_charts(df):
+
+        df = pd.DataFrame(df)
+        df['Date'] = pd.to_datetime(df['Date'], format='mixed')
+        prelims_kpi_fig = build_area_chart(df, 'Prelims', lc='rgba(39, 19, 190, 0.96)', fc='rgba(149, 142, 202, 0.64)')
+        measured_works_kpi_fig = build_area_chart(df, 'Measured Works', lc='rgba(25, 130, 58, 0.94)', fc='rgba(83, 233, 130, 0.45)')
+        costs_kpi_fig = build_area_chart(df, 'Act. Costs', lc='rgba(211, 118, 60, 0.95)', fc='rgba(242, 161, 21, 0.35)')
+        revenue_kpi_fig = build_area_chart(df, 'Act. Revenue', lc='rgba(20, 51, 137, 1)', fc='rgba(89, 167, 255, 0.53)')
+        profit_kpi_fig = build_area_chart(df, 'Est. Profit', lc='rgba(199, 181, 35, 1)', fc='rgba(255, 232, 138, 0.44)')
+        margin_kpi_fig = build_area_chart(df, 'Margin (%)', lc='rgba(233, 89, 145, 0.94)', fc='rgba(245, 130, 145, 0.28)')
+
+        return prelims_kpi_fig, measured_works_kpi_fig, costs_kpi_fig, revenue_kpi_fig, profit_kpi_fig, margin_kpi_fig
     
 
+    update_kpi_latest_value_outputs = []
+    for kpi in kpis:
+        update_kpi_latest_value_outputs.append(Output(f'{kpi}_kpi_current_value', 'children'))
 
+    @dash_app.callback(
+            update_kpi_latest_value_outputs,
+            [Input('filtered-data-store', 'data'), Input('selected-projects-store', 'data')])
+    def update_kpi_latest_value(df, selected_projects):
+        """update_kpi_latest_value
+
+        This callback takes the sliced data and adjusts the latest value of the KPIs
+
+        Args:
+            data (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        df = pd.DataFrame(df)
+        df['Date'] = pd.to_datetime(df['Date'], format='mixed')
+
+        prelims_kpi_latest_value = get_nth_value_column(df, col_name='Prelims', selected_projects=selected_projects)
+        measured_works_kpi_latest_value = get_nth_value_column(df, col_name='Measured Works', selected_projects=selected_projects)
+        costs_kpi_latest_value = get_nth_value_column(df, col_name='Act. Costs', selected_projects=selected_projects)
+        revenue_kpi_latest_value = get_nth_value_column(df, col_name='Act. Revenue', selected_projects=selected_projects)
+        profit_kpi_latest_value = get_nth_value_column(df, col_name='Est. Profit', selected_projects=selected_projects)
+        margin_kpi_latest_value = get_nth_value_column(df, col_name='Margin (%)', selected_projects=selected_projects)
+
+        return prelims_kpi_latest_value, measured_works_kpi_latest_value, costs_kpi_latest_value, revenue_kpi_latest_value, profit_kpi_latest_value, margin_kpi_latest_value
+
+
+    update_kpi_change_icon_outputs = []
+    for kpi in kpis:
+        update_kpi_change_icon_outputs.append(Output(f'{kpi}_kpi_change_icon', 'children'))
+
+    @dash_app.callback(
+            update_kpi_change_icon_outputs,
+            [Input('filtered-data-store', 'data'), Input('selected-projects-store', 'data')])
+    def update_kpi_change_icon(df, selected_projects):
+        """update_kpi_change_icon
+
+        This callback takes the sliced data and adjusts the icon depending on the change of the KPI
+
+        Args:
+            data (_type_): _description_
+
+        Returns:
+            _type_: _description_
+        """
+        df = pd.DataFrame(df)
+        df['Date'] = pd.to_datetime(df['Date'], format='mixed')
+
+
+        prelims_kpi_change = get_nth_value_column(df, col_name='Prelims', selected_projects=selected_projects)
+        measured_works_kpi_change = get_nth_value_column(df, col_name='Measured Works', selected_projects=selected_projects)
+        costs_kpi_change = get_nth_value_column(df, col_name='Act. Costs', selected_projects=selected_projects)
+        revenue_kpi_change = get_nth_value_column(df, col_name='Act. Revenue', selected_projects=selected_projects)
+        profit_kpi_change = get_nth_value_column(df, col_name='Est. Profit', selected_projects=selected_projects)
+        margin_kpi_change = get_nth_value_column(df, col_name='Margin (%)', selected_projects=selected_projects)
+
+        up = "fa-solid fa-caret-up"
+        down = "fa-solid fa-caret-down"
+        stable = "fa-solid fa-stop"
+
+        prelims_kpi_change_icon = html.I(
+            className=up if prelims_kpi_change > 0 else (down if prelims_kpi_change < 0 else stable), 
+            style={'color':'green'} if prelims_kpi_change > 0 else {'color':'red'})
+        measured_works_kpi_change_icon = html.I(
+            className=up if measured_works_kpi_change > 0 else (down if measured_works_kpi_change < 0 else stable), 
+            style={'color':'green'} if measured_works_kpi_change > 0 else {'color':'red'})
+        costs_kpi_change_icon = html.I(
+            className=up if costs_kpi_change > 0 else (down if costs_kpi_change < 0 else stable), 
+            style={'color':'green'} if costs_kpi_change > 0 else {'color':'red'})
+        revenue_kpi_change_icon = html.I(
+            className=up if revenue_kpi_change > 0 else (down if revenue_kpi_change < 0 else stable), 
+            style={'color':'green'} if revenue_kpi_change > 0 else {'color':'red'})
+        profit_kpi_change_icon = html.I(
+            className=up if profit_kpi_change > 0 else (down if profit_kpi_change < 0 else stable), 
+            style={'color':'green'} if profit_kpi_change > 0 else {'color':'red'})
+        margin_kpi_change_icon = html.I(
+            className=up if margin_kpi_change > 0 else (down if margin_kpi_change < 0 else stable), 
+            style={'color':'green'} if margin_kpi_change > 0 else {'color':'red'})
+
+
+        return prelims_kpi_change_icon, measured_works_kpi_change_icon, costs_kpi_change_icon, revenue_kpi_change_icon, profit_kpi_change_icon, margin_kpi_change_icon
+    
+    
     @dash_app.callback(Output('page-content', 'children'),
                        [Input('url', 'pathname')])
     def display_page(pathname):
@@ -85,16 +208,6 @@ def register_callbacks(dash_app):
     )
     def update_output(value):
         return f'You have selected {value}'
-    
-
-    # @dash_app.callback(Output("output", "children"), [Input("bottom_slider", "value")])
-    # def get_horizontal_pos(value):
-    #     return value
-    
-
-    # @dash_app.callback(Output("output1", "children"), [Input("side_slider", "value")])
-    # def get_vertical_pos(value):
-    #     return value
     
 
     @dash_app.callback(
@@ -194,3 +307,43 @@ def register_callbacks(dash_app):
         elif pathname == '/reports' or pathname == '/reports/':
             classes[4] += ' active'
         return classes
+    
+    @dash_app.callback(
+            [Output('pie_charts_row', 'children')],
+            [Input('filtered-data-store', 'data'), Input('selected-projects-store', 'data')])
+    def populate_pie_charts_row(data, selected_projects):
+        # build_pie_charts(fig1, fig2, fig3)
+        if len(selected_projects) == 1:
+            a, b, c = build_pie_charts(fig1, fig2, fig3)
+            to_display = [a, b, c]
+            print(f'\n\n\n\n\n\nIn IF: Building the piecharts {to_display}\nSelected_projects {len(selected_projects)}\n\n\n\n\n')
+        else:
+            to_display = build_line_chart(line_chart_fig)
+            print(f'\n\n\n\n\n\nIn ELSE: Building the piecharts {to_display}\nSelected_projects {len(selected_projects)}\n\n\n\n\n')
+        return [to_display]
+    
+
+
+
+    @dash_app.callback(
+        Output("pie_charts_collapse", "is_open"),
+        [Input("open_charts_collapse_btn", "n_clicks")],
+        [State("pie_charts_collapse", "is_open")],
+    )
+    def toggle_pie_charts(n_left, is_open):
+        print('\t\t\t\tToggle Pie Charts called')
+        if n_left:
+            return not is_open
+        return is_open
+
+
+    @dash_app.callback(
+        Output("maps_collapse", "is_open"),
+        [Input("open_map_collapse_btn", "n_clicks")],
+        [State("maps_collapse", "is_open")],
+    )
+    def toggle_maps(n_right, is_open):
+        print('\t\t\t\tToggle Maps called')
+        if n_right:
+            return not is_open
+        return is_open

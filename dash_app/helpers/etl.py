@@ -1,5 +1,4 @@
-import plotly.express as px
-import plotly.graph_objects as go
+import plotly.graph_objects as go # type: ignore
 
 def build_area_chart(df, column_name, projects_name=None, level='global', lc='blue', fc='rgba(0, 100, 200, 0.5)'):
     if level == 'global':
@@ -47,3 +46,32 @@ def build_area_chart(df, column_name, projects_name=None, level='global', lc='bl
     )
     fig.update_layout(dragmode=False, hovermode='closest')
     return fig
+
+
+def get_nth_latest_record(df, n):
+    # Function to get the nth latest record for each project
+    # Sort by 'Project Name' and 'Date' in descending order
+    df_sorted = df.sort_values(by=['Date'], ascending=[False])
+    # Group by 'Project Name' and get the nth record (0-based index)
+    nth_record = df_sorted.groupby('Project Name').nth(n-1)
+
+    return nth_record.reset_index()
+
+
+def get_nth_value_column(df, col_name, selected_projects=[], pos=1):
+    df = get_nth_latest_record(df, pos)
+    if len(selected_projects) == 0:
+        nth_value = df[col_name].sum()
+    else:
+        nth_value = df[df['Project Name'].isin(selected_projects)][col_name].sum()
+    
+    return nth_value
+
+
+def get_change_direction(df, col_name, selected_projects=[]):
+    last_value = get_nth_value_column(df, col_name, selected_projects, 1)
+    pre_last_value = get_nth_value_column(df, col_name, selected_projects, 2)
+
+    change = last_value - pre_last_value
+    
+    return change
