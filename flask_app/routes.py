@@ -40,8 +40,7 @@ def overview():
     if current_user.is_anonymous:
         return redirect(url_for('login'))
     else:
-        # return redirect(url_for('main_layout'))
-        return redirect(url_for('overview'))
+        return redirect('/overview/')
     
 
 @app.route('/costs', methods=["GET", "POST"])

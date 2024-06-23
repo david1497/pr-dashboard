@@ -45,12 +45,21 @@ def register_callbacks(dash_app):
         Input('username-store', 'data')
     )
     def display_username(data):
+        """display_username
+
+        Args:
+            data (user_data): data containing the user details
+
+        Returns:
+            dbc.NavLink: the numb link with the username
+        """
         return dbc.NavLink(data['username'], href="#")
     
 
-    @dash_app.callback([Output('filtered-data-store', 'data'), Output('selected-projects-store', 'data')],
-                       [Input("overview_table", "selected_rows")],
-                       State('overview_table', 'data'))
+    @dash_app.callback(
+            [Output('filtered-data-store', 'data'), Output('selected-projects-store', 'data')],
+            [Input("overview_table", "selected_rows")],
+            State('overview_table', 'data'))
     def slice_data_main_table(selected_rows, data):
         """slice_data_main_table
         This callback will slice the dataframe behind the visuals in the main page based on the user selections in the main table.
@@ -82,6 +91,16 @@ def register_callbacks(dash_app):
             update_kpi_charts_outputs,
             [Input('filtered-data-store', 'data')])
     def update_kpi_charts(df):
+        """update_kpi_charts
+
+        Reads the data from the excel file and based on the user interactions slices the dataframe and returns the kpi charts for the main page.
+
+        Args:
+            df (dict): the data as a dictionary which is transformed in a pd dataframe later.
+
+        Returns:
+            line_charts: Line charts for the kpi's pannel on the overview page.
+        """
 
         df = pd.DataFrame(df)
         df['Date'] = pd.to_datetime(df['Date'], format='mixed')
@@ -108,10 +127,10 @@ def register_callbacks(dash_app):
         This callback takes the sliced data and adjusts the latest value of the KPIs
 
         Args:
-            data (_type_): _description_
+            data (dict): Dictionary with the data about the projects based on the user selections.
 
         Returns:
-            _type_: _description_
+            ints: integer values representing the latest value of each kpis from the main page. 
         """
         df = pd.DataFrame(df)
         df['Date'] = pd.to_datetime(df['Date'], format='mixed')
@@ -139,21 +158,21 @@ def register_callbacks(dash_app):
         This callback takes the sliced data and adjusts the icon depending on the change of the KPI
 
         Args:
-            data (_type_): _description_
+            data (dict): dictionary with the data selected by the user.
 
         Returns:
-            _type_: _description_
+            html.icon: changes the value of the triangle from the kpis section.
         """
         df = pd.DataFrame(df)
         df['Date'] = pd.to_datetime(df['Date'], format='mixed')
 
 
-        prelims_kpi_change = get_nth_value_column(df, col_name='Prelims', selected_projects=selected_projects)
-        measured_works_kpi_change = get_nth_value_column(df, col_name='Measured Works', selected_projects=selected_projects)
-        costs_kpi_change = get_nth_value_column(df, col_name='Act. Costs', selected_projects=selected_projects)
-        revenue_kpi_change = get_nth_value_column(df, col_name='Act. Revenue', selected_projects=selected_projects)
-        profit_kpi_change = get_nth_value_column(df, col_name='Est. Profit', selected_projects=selected_projects)
-        margin_kpi_change = get_nth_value_column(df, col_name='Margin (%)', selected_projects=selected_projects)
+        prelims_kpi_change = get_change_direction(df, col_name='Prelims', selected_projects=selected_projects)
+        measured_works_kpi_change = get_change_direction(df, col_name='Measured Works', selected_projects=selected_projects)
+        costs_kpi_change = get_change_direction(df, col_name='Act. Costs', selected_projects=selected_projects)
+        revenue_kpi_change = get_change_direction(df, col_name='Act. Revenue', selected_projects=selected_projects)
+        profit_kpi_change = get_change_direction(df, col_name='Est. Profit', selected_projects=selected_projects)
+        margin_kpi_change = get_change_direction(df, col_name='Margin (%)', selected_projects=selected_projects)
 
         up = "fa-solid fa-caret-up"
         down = "fa-solid fa-caret-down"
@@ -161,32 +180,42 @@ def register_callbacks(dash_app):
 
         prelims_kpi_change_icon = html.I(
             className=up if prelims_kpi_change > 0 else (down if prelims_kpi_change < 0 else stable), 
-            style={'color':'green'} if prelims_kpi_change > 0 else {'color':'red'})
+            style={'color':'green'} if prelims_kpi_change > 0 else ({'color':'#c51212'} if prelims_kpi_change < 0 else {'color':'#bfe2f3'}))
         measured_works_kpi_change_icon = html.I(
             className=up if measured_works_kpi_change > 0 else (down if measured_works_kpi_change < 0 else stable), 
-            style={'color':'green'} if measured_works_kpi_change > 0 else {'color':'red'})
+            style={'color':'green'} if measured_works_kpi_change > 0 else ({'color':'#c51212'} if measured_works_kpi_change < 0 else {'color':'#bfe2f3'}))
         costs_kpi_change_icon = html.I(
             className=up if costs_kpi_change > 0 else (down if costs_kpi_change < 0 else stable), 
-            style={'color':'green'} if costs_kpi_change > 0 else {'color':'red'})
+            style={'color':'green'} if costs_kpi_change > 0 else ({'color':'#c51212'} if costs_kpi_change < 0 else {'color':'#bfe2f3'}))
         revenue_kpi_change_icon = html.I(
             className=up if revenue_kpi_change > 0 else (down if revenue_kpi_change < 0 else stable), 
-            style={'color':'green'} if revenue_kpi_change > 0 else {'color':'red'})
+            style={'color':'green'} if revenue_kpi_change > 0 else ({'color':'#c51212'} if revenue_kpi_change < 0 else {'color':'#bfe2f3'}))
         profit_kpi_change_icon = html.I(
             className=up if profit_kpi_change > 0 else (down if profit_kpi_change < 0 else stable), 
-            style={'color':'green'} if profit_kpi_change > 0 else {'color':'red'})
+            style={'color':'green'} if profit_kpi_change > 0 else ({'color':'#c51212'} if profit_kpi_change < 0 else {'color':'#bfe2f3'}))
         margin_kpi_change_icon = html.I(
             className=up if margin_kpi_change > 0 else (down if margin_kpi_change < 0 else stable), 
-            style={'color':'green'} if margin_kpi_change > 0 else {'color':'red'})
+            style={'color':'green'} if margin_kpi_change > 0 else ({'color':'#c51212'} if margin_kpi_change < 0 else {'color':'#bfe2f3'}))
 
 
         return prelims_kpi_change_icon, measured_works_kpi_change_icon, costs_kpi_change_icon, revenue_kpi_change_icon, profit_kpi_change_icon, margin_kpi_change_icon
     
     
-    @dash_app.callback(Output('page-content', 'children'),
-                       [Input('url', 'pathname')])
+#--------------------------------------------------------------------
+#---------------- Start of Navigation callbacks ---------------------
+#--------------------------------------------------------------------    
+    @dash_app.callback(
+            Output('page-content', 'children'),
+            Input('url', 'pathname'))
     def display_page(pathname):
+        
+        ctx = callback_context
+        if ctx.triggered:
+            triggered_input = ctx.triggered[0]['prop_id'].split('.')[0]
+            print(f"Callback display_page triggered by: {triggered_input}")
+
         if pathname == '/costs' or pathname == '/costs/':
-            return main_layout
+            return main_layout 
         elif pathname == '/suppliers' or pathname == '/suppliers/':
             return main_layout #layout_suppliers
         elif pathname == '/materials' or pathname == '/materials/':
@@ -200,73 +229,18 @@ def register_callbacks(dash_app):
         else:
             return main_layout #layout
         
+
     
-    # Add callback for the slider
+     # Callback to display the page content based on URL
     @dash_app.callback(
-        Output('slider-output-container', 'children'),
-        [Input('footer-slider', 'value')]
-    )
-    def update_output(value):
-        return f'You have selected {value}'
-    
-
-    @dash_app.callback(
-        [Output('side_slider', 'value'), Output('bottom_slider', 'value')],
-        [Input('url', 'pathname')]
-    )
-    def update_radios(pathname):
-        page_map = {
-            '/overview': ('1', 'left'),
-            '/costs': ('1', 'right'),
-            '/materials': ('2', 'left'),
-            '/labour': ('2', 'right'),
-            '/suppliers': ('3', 'left'),
-            '/reports': ('3', 'right'),
-        }
-        if pathname in page_map:
-            return page_map[pathname]
-        return '1', 'left'
-
-
-    @dash_app.callback(Output('url', 'pathname'),
-    [Input('side_slider', 'value'), Input('bottom_slider', 'value')]
-    )
-    def update_url(side_slider, bottom_slider):
-
-        ctx = callback_context
-        if not ctx.triggered:
-            print("No callback triggered")
-        else:
-            triggered_input = ctx.triggered[0]['prop_id'].split('.')[0]
-            print(f"Callback triggered by: {triggered_input}")
-
-        if side_slider and bottom_slider:
-            # Map the combination of radio buttons to specific pages
-            page_map = {
-                ('1', 'left'): '/overview',
-                ('1', 'right'): '/costs',
-                ('2', 'left'): '/materials',
-                ('2', 'right'): '/labour',
-                ('3', 'left'): '/suppliers',
-                ('3', 'right'): '/reports',
-            }
-            return page_map[(side_slider, bottom_slider)]
-        return '/overview'
-    
-
-    # Callback to display the page content based on URL
-    @dash_app.callback(
-        [Output('main-page-content', 'children'), Output('page-title', 'children')],
-        [Input('url', 'pathname')]
-    )
-    def display_page(pathname):
+            [Output('main-page-content', 'children'), Output('page-title', 'children')],
+            Input('url', 'pathname'))
+    def display_page1(pathname):
         
         ctx = callback_context
-        if not ctx.triggered:
-            print("No callback triggered")
-        else:
+        if ctx.triggered:
             triggered_input = ctx.triggered[0]['prop_id'].split('.')[0]
-            print(f"Callback triggered by: {triggered_input}")
+            print(f"Callback display_page1 triggered by: {triggered_input}")
 
         if pathname == '/overview' or pathname == '/overview/':
             return layout, "Overview page"
@@ -281,17 +255,58 @@ def register_callbacks(dash_app):
         elif pathname == '/reports' or pathname == '/reports/':
             return layout_reports, "Reports page"
         else:
-            pass
+            return layout, "Overview page"
+    
+
+    #=========================== start of sliders' navigation ===================================
+    @dash_app.callback(
+            [Output('side_slider', 'value'), Output('bottom_slider', 'value')],
+            Input('url', 'pathname'))
+    def update_radios(pathname):
+        page_map = {
+            '/overview': ('1', 'left'),
+            '/costs': ('1', 'right'),
+            '/materials': ('2', 'left'),
+            '/labour': ('2', 'right'),
+            '/suppliers': ('3', 'left'),
+            '/reports': ('3', 'right'),
+        }
+        if pathname in page_map:
+            return page_map[pathname]
+        return '1', 'left'
+    #=========================== end of sliders' navigation ======================================
 
 
     @dash_app.callback(
-    [Output('costs-link', 'className'),
-     Output('suppliers-link', 'className'),
-     Output('labour-link', 'className'),
-     Output('materials-link', 'className'),
-     Output('reports-link', 'className')],
-    [Input('url', 'pathname')]
-    )
+            Output('url', 'pathname'),
+            [Input('side_slider', 'value'), Input('bottom_slider', 'value')])
+    def update_url(side_slider, bottom_slider):
+
+        ctx = callback_context
+        if ctx.triggered:
+            triggered_input = ctx.triggered[0]['prop_id'].split('.')[0]
+            print(f"Callback update_url triggered by: {triggered_input}")
+
+        if side_slider and bottom_slider:
+            # Map the combination of radio buttons to specific pages
+            page_map = {
+                ('1', 'left'): '/overview',
+                ('1', 'right'): '/costs',
+                ('2', 'left'): '/materials',
+                ('2', 'right'): '/labour',
+                ('3', 'left'): '/suppliers',
+                ('3', 'right'): '/reports',
+            }
+            return page_map[(side_slider, bottom_slider)]
+        return '/overview/'
+    
+
+    # =========================== Start of callbacks that highlights the active link in the navbar ===========================
+    @dash_app.callback(
+            [Output('costs-link', 'className'), Output('suppliers-link', 'className'),
+             Output('labour-link', 'className'), Output('materials-link', 'className'),
+             Output('reports-link', 'className')],
+             Input('url', 'pathname'))
     def update_active_link(pathname):
         # Default class for all links
         classes = ['nav-link'] * 5
@@ -307,43 +322,52 @@ def register_callbacks(dash_app):
         elif pathname == '/reports' or pathname == '/reports/':
             classes[4] += ' active'
         return classes
+    # =========================== End of callbacks that highlights the active link in the navbar ===========================
+    
+#----------------------------------------------------------------------
+#------------------ End of Navigation callbacks -----------------------
+#----------------------------------------------------------------------
     
     @dash_app.callback(
             [Output('pie_charts_row', 'children')],
-            [Input('filtered-data-store', 'data'), Input('selected-projects-store', 'data')])
-    def populate_pie_charts_row(data, selected_projects):
-        # build_pie_charts(fig1, fig2, fig3)
+            [Input('selected-projects-store', 'data')])
+    def populate_pie_charts_row(selected_projects):
+        """populate_pie_charts_row
+
+        If one project is selected - displaying the pie charts, if several or none - displaying the line_chart
+        Args:
+            selected_projects (list): list of selected projects
+
+        Returns:
+            list: objects to be displayed beneath the main table in the overview tab
+        """
         if len(selected_projects) == 1:
             a, b, c = build_pie_charts(fig1, fig2, fig3)
             to_display = [a, b, c]
-            print(f'\n\n\n\n\n\nIn IF: Building the piecharts {to_display}\nSelected_projects {len(selected_projects)}\n\n\n\n\n')
+            # Building the piecharts for the selected_projects
         else:
             to_display = build_line_chart(line_chart_fig)
-            print(f'\n\n\n\n\n\nIn ELSE: Building the piecharts {to_display}\nSelected_projects {len(selected_projects)}\n\n\n\n\n')
+            # Building the line chart for the selected_projects
         return [to_display]
-    
-
 
 
     @dash_app.callback(
-        Output("pie_charts_collapse", "is_open"),
-        [Input("open_charts_collapse_btn", "n_clicks")],
-        [State("pie_charts_collapse", "is_open")],
-    )
+            Output("pie_charts_collapse", "is_open"),
+            [Input("open_charts_collapse_btn", "n_clicks")],
+            [State("pie_charts_collapse", "is_open")])
     def toggle_pie_charts(n_left, is_open):
-        print('\t\t\t\tToggle Pie Charts called')
+        # If the pie charts/line chart should be displayed or not. 
         if n_left:
             return not is_open
         return is_open
 
 
     @dash_app.callback(
-        Output("maps_collapse", "is_open"),
-        [Input("open_map_collapse_btn", "n_clicks")],
-        [State("maps_collapse", "is_open")],
-    )
+            Output("maps_collapse", "is_open"),
+            [Input("open_map_collapse_btn", "n_clicks")],
+            [State("maps_collapse", "is_open")])
     def toggle_maps(n_right, is_open):
-        print('\t\t\t\tToggle Maps called')
+        # If the map should be displayed or not.
         if n_right:
             return not is_open
         return is_open

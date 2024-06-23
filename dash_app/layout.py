@@ -166,4 +166,10 @@ layout = html.Div(children=[
         className='second_row', 
         id='maps_row'      
     ),
+    dbc.Row(
+        [
+            dbc.Col(html.Hr())
+        ],
+        className="row_splitter"
+    ),
 ])

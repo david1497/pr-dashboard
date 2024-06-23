@@ -1,6 +1,5 @@
 // swipe.js
 // this function is created to send the js browser logs to the flask server logs
-console.log('File active. Should work. New');
 function sendLogToServer(message) {
     fetch('/log', {
         method: 'POST',
@@ -13,10 +12,8 @@ function sendLogToServer(message) {
     .then(data => console.log('Log sent to server:', data))
     .catch((error) => console.error('Error sending log to server:', error));
 }
+
 // --------------------------------------------------------------------------------
-sendLogToServer('\n\nChecking if the logging works');
-
-
 document.addEventListener('DOMContentLoaded', function() {
 
     const matrixLayout = [
@@ -32,29 +29,20 @@ document.addEventListener('DOMContentLoaded', function() {
             [Hammer.Swipe, { direction: Hammer.DIRECTION_ALL }]
         ]
     });
-    console.log('Hammer.js initialized on document body with all directions');
 
     hammertime.on('swipeleft', function(ev) {
-        console.log('Swipe left detected');
-        sendLogToServer('Swipe left detected');
         handleSwipe('left');
     });
 
     hammertime.on('swiperight', function(ev) {
-        console.log('Swipe right detected');
-        sendLogToServer('Swipe right detected');
         handleSwipe('right');
     });
 
     hammertime.on('swipeup', function(ev) {
-        console.log('Swipe up detected');
-        sendLogToServer('Swipe up detected');
         handleSwipe('up');
     });
 
     hammertime.on('swipedown', function(ev) {
-        console.log('Swipe down detected');
-        sendLogToServer('Swipe down detected');
         handleSwipe('down');
     });
 
@@ -63,13 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var currentPath = window.location.pathname;
         var newPath = getNewPath(currentPath, direction);
 
-        sendLogToServer('Current path: \t', currentPath);
-        sendLogToServer('Current path: \t', newPath);
-        console.log('\n\nCurrent path: \t', currentPath);
-        console.log('\n\nCurrent path: \t', newPath);
-        
         if (newPath) {
-            console.log('Navigating to new path:', newPath);
             window.location.pathname = newPath;
         }
     }

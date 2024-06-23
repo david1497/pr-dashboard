@@ -1,6 +1,6 @@
 from dash import html, dcc # type: ignore
-import dash_bootstrap_components as dbc
-import dash_leaflet as dl
+import dash_bootstrap_components as dbc # type: ignore
+import dash_leaflet as dl # type: ignore
 
 def build_pie_charts(fig1, fig2, fig3):
     pie_charts = [dbc.Col(
@@ -48,5 +48,5 @@ def build_map():
             ])
         ])
     ], style={'width': '100%', 'height': '50vh'})
-    
+
     return the_map

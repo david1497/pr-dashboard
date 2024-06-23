@@ -1,4 +1,3 @@
-console.log('File Scroll active. Should work. New');
 function sendLogToServer(message) {
     fetch('/log', {
         method: 'POST',
@@ -11,9 +10,9 @@ function sendLogToServer(message) {
     .then(data => console.log('Log sent to server:', data))
     .catch((error) => console.error('Error sending log to server:', error));
 }
+// sendLogToServer('NewPage: \t', newPath);
+// console.log('\n\nNewPage: \t', newPath);
 // --------------------------------------------------------------------------------
-sendLogToServer('\n\nChecking if the logging works');
-
 document.addEventListener('DOMContentLoaded', function() {
 
     let lastScrollY = window.scrollY;
@@ -56,11 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         let currentPath = window.location.pathname;
-        console.log('Vertical Scroll ', direction, ' detected in ', currentPath);
-        sendLogToServer('Vertical Scroll ', direction, ' detected in ', currentPath);
         let newPath = getNewPath(currentPath, direction);
-        console.log('Will redirect to ', newPath);
-        sendLogToServer('Will redirect to ', newPath);
 
         if (direction === 'down' && atBottom && newPath) {
             window.location.pathname = newPath;
@@ -77,12 +72,12 @@ document.addEventListener('DOMContentLoaded', function() {
     function getNewPath(currentPath, direction) {
 
         const navigationMap = {
-            '/overview': {down: '/labour', right: '/costs'},
-            '/labour': {up: '/overview', down: '/suppliers', left: '/materials'},
-            '/suppliers': {up: '/labour', left: '/reports'},
-            '/costs': {down: '/materials', left: '/overview'},
-            '/materials': {up: '/costs', down: '/reports', right: '/labour'},
-            '/reports': {up: '/materials', left: '/suppliers'}
+            '/overview': {down: '/labour/', right: '/costs/'},
+            '/labour': {up: '/overview/', down: '/suppliers/', left: '/materials/'},
+            '/suppliers': {up: '/labour/', left: '/reports/'},
+            '/costs': {down: '/materials/', left: '/overview/'},
+            '/materials': {up: '/costs/', down: '/reports/', right: '/labour/'},
+            '/reports': {up: '/materials/', left: '/suppliers/'}
         };
 
         if (navigationMap[currentPath] && navigationMap[currentPath][direction]) {
